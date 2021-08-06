@@ -1,0 +1,66 @@
+server.port: ${SERVER_PORT}
+server.jetty.max-http-form-post-size: 20MB
+server.max-http-header-size: 2MB
+spring.main.allow-bean-definition-overriding: true
+jc.cache.redis.dbName: ${REDIS_DBNAME:jc-test}
+spring.redis.database: ${REDIS_DATABASE:11}
+spring.redis.host: ${REDIS_HOST:127.0.0.1}
+spring.redis.lettuce:
+  pool:
+    max-active: 8
+    max-idle: 8
+    max-wait: -1ms
+    min-idle: 0
+  shutdown-timeout: 100ms
+spring.redis:
+  port: ${REDIS_PORT:6379}
+  
+mybatis: #mybatis配置
+   mapper-locations: classpath:mapper/*Mapper.xml
+   type-aliases-package: com.glodon.scm.support.template.*.entity
+  
+mybatis-plus:
+  # xml
+   mapper-locations: classpath:mapper/*Mapper.xml
+  # 实体扫描，多个package用逗号或者分号分隔
+   type-aliases-package: com.glodon.scm.support.template.*.entity
+   configuration:
+    # 这个配置会将执行的sql打印出来，在开发或测试的时候可以用
+     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+   global-config:
+      db-config:
+           id-type: UUID
+           logicDeleteValue: 1
+           logicNotDeleteValue: 0
+    
+jc.default:
+    datasource:
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_TEMPLATE}?useUnicode=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      initialSize: 5
+      minIdle: 1
+      maxActive: 20
+      maxWait: 60000
+      
+jc.base:
+    datasource:
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_BASE}?useUnicode=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8
+
+
+jc.enterprise:
+  datasource:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_ENTERPRISE}?useUnicode=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8
+
+
+
+debug: true
+application:
+  log-to-console: false # true|false 是否打印SQL等系统调测信息，一般开发环境设true，正式环境设false
+  material-switch: ${MATERIAL_SWITCH:old} # 默认old，表示物料库用的是base里的物料表， new表示用的是spt_material新库
+  material-tables: ${MATERIAL_TABLES:mat_class,mat_material,mat_material_apply,mat_mctypes,mat_mysteel_data,mat_mysteel_jcmaterial,mat_mysteel_material,mat_mysteel_quotation,mat_pattern,mat_price} # 开关影响的物料库相关表

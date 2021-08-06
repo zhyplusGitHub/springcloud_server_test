@@ -1,0 +1,152 @@
+server.servlet.context-path: /
+spring.main.allow-bean-definition-overriding: true
+jc.cache.redis.dbName: ${REDIS_DBNAME:jc-test}
+spring.redis.database: ${REDIS_DATABASE:11}
+server.port: ${SERVER_PORT}
+server.jetty.max-http-form-post-size: 20MB
+server.max-http-header-size: 2MB
+spring.redis.host: ${REDIS_HOST:127.0.0.1}
+spring.redis.lettuce:
+               pool:
+                 max-active: 8
+                 max-idle: 8
+                 max-wait: -1ms
+                 min-idle: 0
+               shutdown-timeout: 100ms
+spring.redis:
+         port: ${REDIS_PORT:6379}
+
+application:
+  resource:
+    loadsort: jc-rpt-service,jc-rpt-core,jc-etl-core,jc-base-core,jc-core
+  ram-cache-expire: 300 # 默认本地存缓存时间（秒），本机设为3秒，正式网设为5分钟
+  dev: false # true|false 表示开启dev模式，用于开发使用配置通用选项,正式环境不可为true，可没有此配置项
+  log-to-console: false # true|false 是否打印SQL等系统调测信息，一般开发环境设true，正式环境设false
+  material-switch: ${MATERIAL_SWITCH:old} # 默认old，表示物料库用的是base里的物料表， new表示用的是spt_material新库
+  material-tables: ${MATERIAL_TABLES:mat_class,mat_material,mat_material_apply,mat_mctypes,mat_mysteel_data,mat_mysteel_jcmaterial,mat_mysteel_material,mat_mysteel_quotation,mat_pattern,mat_price} # 开关影响的物料库相关表
+jc.default:
+  datasource:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_RPT_ETL}?useUnicode=true&rewriteBatchedStatements=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    initialSize: 1
+    minIdle: 1
+    maxActive: 1000
+    maxWait: 120000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT x
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    filters: stat
+    removeAbandoned: true
+    removeAbandonedTimeout: 60000
+
+jc.base:
+  datasource:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_BASE}?useUnicode=true&rewriteBatchedStatements=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8
+jc.sourcing:
+    datasource:
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_SOURCING}?useUnicode=true&rewriteBatchedStatements=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8
+jc.plan:
+  datasource:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_PLAN}?useUnicode=true&rewriteBatchedStatements=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8
+jc.contract:
+  datasource:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_CONTRACT}?useUnicode=true&rewriteBatchedStatements=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8
+jc.enterprise:
+  datasource:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_ENTERPRISE}?useUnicode=true&rewriteBatchedStatements=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8
+jc.ec:
+    datasource:
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_EC}?useUnicode=true&rewriteBatchedStatements=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8
+jc.log:
+  datasource:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_LOG}?useUnicode=true&rewriteBatchedStatements=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8
+jc.enquiry:
+  datasource:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_ENQUIRY}?useUnicode=true&rewriteBatchedStatements=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8
+
+#jc.v6-supp:
+#  datasource:
+#    username: ${V6_DB_USERNAME}
+#    password: ${V6_DB_PASSWORD}
+#    url: jdbc:mysql://${V6_DB_HOST}:${V6_DB_PORT}/${V6_DB_JC}?useUnicode=true&rewriteBatchedStatements=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8
+#jc.v6-supp:
+#  datasource:
+#    username: ${V6_DB_USERNAME}
+#    password: ${V6_DB_PASSWORD}
+#    dbtype: mssql
+#    url: jdbc:sqlserver://${V6_DB_HOST}:${V6_DB_PORT};DatabaseName=${V6_DB_JC}
+jc.v6-supp:
+  datasource:
+    username: ${V6_DB_USERNAME}
+    password: ${V6_DB_PASSWORD}
+    dbtype: ${V6_DB_TYPE}
+    url: ${V6_DB_URL}
+
+jc.order:
+  datasource:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_ORDER}?useUnicode=true&rewriteBatchedStatements=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8
+
+jc.finance:
+  datasource:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_FINANCE}?useUnicode=true&rewriteBatchedStatements=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8
+
+
+spring:
+  cloud:
+    kubernetes:
+      enabled: false
+      ribbon:
+        mode: SERVICE
+
+ribbon:
+  KubernetesNamespace: ${K8S_NAMESPACE:default}
+  ServerListRefreshInterval: 5000
+
+feign:
+  okhttp:
+    enabled: true
+  hystrix:
+    enabled: true
+  client:
+    config:
+      default:
+        connectTimeout: 50000
+        readTimeout: 50000
+  jc-gateway:
+    url: ${FEIGN_GATEWAY_URL:http://localhost:7001}
+  jc-base:
+    url: ${FEIGN_BASE_URL:http://localhost:7201}
+
+xxl.job.admin.addresses: http://${PF_SERVER_DOMAIN}/job
+
+jc:
+  api:
+    local:
+      gateway: http://${PF_SERVER_DOMAIN}

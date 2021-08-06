@@ -1,0 +1,31 @@
+server.port:  ${SERVER_PORT}
+server.jetty.max-http-form-post-size: 20MB
+server.max-http-header-size: 2MB
+
+spring.main.allow-bean-definition-overriding: true
+
+upgrade:
+  datasource:
+    username: ${DB_USERNAME}
+    password:  ${DB_PASSWORD}
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/{database}?useUnicode=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8
+    datasourceMapping:
+      base: ${DB_BASE}
+      contract: ${DB_CONTRACT}
+      ec: ${DB_EC}
+      enterprise: ${DB_ENTERPRISE}
+      finance: ${DB_FINANCE}
+      inter: ${DB_INTER}
+      log: ${DB_LOG}
+      order: ${DB_ORDER}
+      plan: ${DB_PLAN}
+      rpt_etl: ${DB_RPT_ETL}
+      sourcing: ${DB_SOURCING}
+application:
+  ram-cache-expire: 3 # 默认本地存缓存时间（秒），本机设为3秒，正式网设为5分钟
+  dev: false # true|false 表示开启dev模式，用于开发使用配置通用选项,正式环境不可为true，可没有此配置项
+  log-to-console: false # true|false 是否打印SQL等系统调测信息，一般开发环境设true，正式环境设false
+
+logging:
+  level:
+    root: INFO

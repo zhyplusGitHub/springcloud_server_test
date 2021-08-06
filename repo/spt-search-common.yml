@@ -1,0 +1,72 @@
+server.port: ${SERVER_PORT}
+server.jetty.max-http-form-post-size: 20MB
+server.max-http-header-size: 2MB
+spring.main.allow-bean-definition-overriding: true
+jc.cache.redis.dbName: ${REDIS_DBNAME:jc-test}
+spring.redis.database: ${REDIS_DATABASE:11}
+spring.redis.host: ${REDIS_HOST:127.0.0.1}
+spring.redis.lettuce:
+  pool:
+    max-active: 8
+    max-idle: 8
+    max-wait: -1ms
+    min-idle: 0
+  shutdown-timeout: 100ms
+spring.redis:
+  port: ${REDIS_PORT:6379}
+
+mybatis-plus:
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  #实体扫描，多个package用逗号或者分号分隔
+  typeAliasesPackage: com.glodon.scm.support.search.**.entity
+  global-config:
+    # 数据库相关配置
+    db-config:
+      #主键类型  AUTO:"数据库ID自增", INPUT:"用户输入ID",ID_WORKER:"全局唯一ID (数字类型唯一ID)", UUID:"全局唯一ID UUID";
+      id-type: UUID
+      logicDeleteValue: 1
+      logicNotDeleteValue: 0
+      #字段策略 IGNORED:"忽略判断",NOT_NULL:"非 NULL 判断"),NOT_EMPTY:"非空判断"
+      #field-strategy: not_empty
+      #驼峰下划线转换
+      #column-underline: true
+      #db-type: mysql
+
+jc.default:
+  datasource:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_MATERIAL}?useUnicode=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    initialSize: 5
+    minIdle: 1
+    maxActive: 20
+    maxWait: 60000
+
+jc.base:
+  datasource:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_BASE}?useUnicode=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8
+
+jc.enterprise:
+  datasource:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_ENTERPRISE}?useUnicode=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8
+
+
+application:
+  log-to-console: true # true|false 是否打印SQL等系统调测信息，一般开发环境设true，正式环境设false
+
+feign:
+  httpclient:
+    enabled: true
+  hystrix:
+    enabled: true
+  jc-gateway:
+    url: ${FEIGN_GATEWAY_URL:http://localhost:7001}
+
+es:
+  host: ${ES_SERVER:es.dev.com}
+  port: ${ES_SERVER_PORT:9200}

@@ -1,0 +1,313 @@
+jc.cache.redis.dbName: ${REDIS_DBNAME:jc-test}
+server.port: ${SERVER_PORT:8080}
+server.jetty.max-http-form-post-size: 30MB
+server.max-http-header-size: 2MB
+spring.redis.database: ${REDIS_DATABASE:11}
+spring.redis.host: ${REDIS_HOST:127.0.0.1}
+spring.redis.lettuce:
+               pool:
+                 max-active: 8
+                 max-idle: 8
+                 max-wait: -1ms
+                 min-idle: 0
+               shutdown-timeout: 100ms
+spring.redis:
+         port: ${REDIS_PORT:6379}
+
+spring.cloud:
+  gateway:
+    routes:
+      - id: static_route
+        uri: lb://jc-static
+        predicates:
+          - Path=/static/**,/script/**,/style/**,/upload1/**,/*.txt,/flow-view/**
+        filters:
+          - AddResponseHeader=Cache-Control, max-age=3600
+
+      - id: base_route
+        uri: lb://jc-base
+        predicates:
+          - Path=/base/**,/wechat/base/**,/baseseller/**,/cfg/**,/core/**,/tabs*,/down/**,/upload2/**,/sysupgrade,/api/base/**,/dingding/base/**,/short**
+        filters:
+          - JcCas=/base|/baseseller|/cfg|/core,/base/wf/approval/viewHtm|/base/itf/weaver/*|/base/itf/blcd/*|/base/itf/common/*|/wechat/sourcing/seller/getMessageDoc|/base/itf/zy/ah/*|/base/itf/zy/*|/base/itf/fs/*|/base/oauth2/callback|/base/sms/sendSms|/signature/api/getutils|/base/todotask/sendMsg|/base/api/**|/signature/api/utils|/base/address/api/**|/base/province/**|/base/city/**|/base/district/**|/base/street/**
+          - PreserveHostHeader
+
+      - id: enterprise_route
+        uri: lb://jc-enterprise
+        predicates:
+          - Path=/enterprise/**,/reg/**,/login/**,/wechat/enterprise/**,/dingding/enterprise/**,/api/enterprise/**
+        filters:
+          - JcCas=/enterprise|/login/reg,login|/enterprise/v1/signature/callback|/enterprise/v1/gc/token/*|/enterprise/wf/approval/viewHtm|/enterprise/itf/fs/*|/enterprise/v1/gc/supplier/status|/enterprise/api/**|/enterprise/itf/**
+          - PreserveHostHeader
+        metadata:
+          response-timeout: 600000
+          connect-timeout: 1000
+
+      - id: index_route
+        uri: lb://jc-ec
+        predicates:
+          - Path=/
+        filters:
+          - PreserveHostHeader
+          - RewritePath=/, /portal/index
+
+      - id: ec_route
+        uri: lb://jc-ec
+        predicates:
+          - Path=/ec/**,/wechat/ec/**,/portal/**
+        filters:
+          - JcCas=/ec,login
+          - PreserveHostHeader
+
+      - id: plan_route
+        uri: lb://jc-plan
+        predicates:
+          - Path=/plan/**,/wechat/plan/**,/plan/js/**
+        filters:
+          - JcCas=/plan,login|/plan/api/**|/plan/wf/approval/viewHtm
+          - PreserveHostHeader
+
+      - id: sourcing_route
+        uri: lb://jc-sourcing
+        predicates:
+          - Path=/sourcing/**,/wechat/sourcing/**,/sourcing/js/**,/api/sourcing/**
+        filters:
+          - JcCas=/sourcing|/contract,login|/contract/api/**|/sourcing/api/**|/sourcing/wf/approval/viewHtm|/contract/wf/approval/viewHtm
+          - PreserveHostHeader
+
+      - id: order_route
+        uri: lb://jc-order
+        predicates:
+          - Path=/order/**,/wechat/order/**
+        filters:
+          - JcCas=/order,login|/order/app/driver/*|/order/app/delivery/*|/order/api/**|/order/wf/approval/viewHtm
+          - PreserveHostHeader
+
+      - id: finance_route
+        uri: lb://jc-finance
+        predicates:
+          - Path=/finance/**,/wechat/finance/**, /WW_verify_FyvMEGCcaVspHFiE.txt
+        filters:
+          - JcCas=/finance,login
+          - PreserveHostHeader
+
+      - id: inter_route
+        uri: lb://jc-inter
+        predicates:
+          - Path=/inter/**
+        filters:
+          - JcCas=/inter,login|/inter/webservice/**|/inter/api/**
+          - PreserveHostHeader
+
+      - id: rpt_route
+        uri: lb://jc-rpt
+        predicates:
+          - Path=/rpt/**
+        filters:
+          - JcCas=/rpt,login|/rpt/api/**
+          - PreserveHostHeader
+
+      - id: log_route
+        uri: lb://jc-log
+        predicates:
+          - Path=/log/**
+        filters:
+          - JcCas=/log,login
+          - PreserveHostHeader
+
+      - id: job_route
+        uri: lb://jc-job
+        predicates:
+          - Path=/job/**
+
+      - id: flow-engine
+        uri: lb://flow-engine
+        predicates:
+          - Path=/api/flow-engine/**
+        filters:
+          - JcCas=/,/login,/api/flow-engine/**
+          - StripPrefix=2
+      - id: flow-app
+        uri: lb://flow-app
+        predicates:
+          - Path=/flow-app/**,/api/flow-app/**,/api/org-permission/**,/api/product/**,/api/tenant-user/**
+        filters:
+          - JcCas=/,/login
+          - StripPrefix=2
+      - id: upgrade-agent-route
+        uri: lb://jc-upgrade-agent
+        predicates:
+          - Path=/upgrade/agent/**
+        metadata:
+          response-timeout: 600000
+          connect-timeout: 10000
+
+      # 价格模板
+      - id: template-route
+        uri: lb://spt-template
+        predicates:
+          - Path=/template/**
+        filters:
+          - JcCas=/template,login
+          - PreserveHostHeader
+
+      # 物料
+      - id: material-route
+        uri: lb://spt-material
+        predicates:
+          - Path=/material/**
+        filters:
+          - JcCas=/material,login|/material/goodsCategory/api/**|/material/goodspool/api/**|/material/goods/api/**|/material/goodsInfo/getGoodsInfoDetail|/material/goodsInfo/getRecommend
+          - PreserveHostHeader
+
+      # 商城设置
+      - id: spt_setting_route
+        uri: lb://spt-setting
+        predicates:
+          - Path=/setting/**
+        filters:
+          - JcCas=/setting,/login|/setting/echannelconf/loadData|/setting/floorgoods/list|/setting/ecategorynavi/queryMatCates/**
+          - PreserveHostHeader
+      # 合同
+      - id: contract_route
+        uri: lb://srm-contract
+        predicates:
+          - Path=/contract/**,/wechat/contract/**
+        filters:
+          - JcCas=/contract,login|/contract/api/**|/sourcing/wf/approval/viewHtm|/contract/wf/approval/viewHtm
+          - PreserveHostHeader
+
+      # 询价
+      - id: enquiry_route
+        uri: lb://srm-enquiry
+        predicates:
+          - Path=/enquiry/**
+        filters:
+          - JcCas=/enquiry,login
+          - PreserveHostHeader
+
+      # 商城履约订单
+      - id: trd_order_route
+        uri: lb://trd-order
+        predicates:
+          - Path=/trade/order/**
+        filters:
+          - JcCas=/trade/order,login|/trade/order/api/**|/trade/order/wf/approval/viewHtm
+          - PreserveHostHeader
+      # 商城履约财务
+      - id: trd_finance_route
+        uri: lb://trd-finance
+        predicates:
+          - Path=/trade/finance/**
+        filters:
+          - JcCas=/trade/finance,login|/trade/finance/api/**|/trade/finance/wf/approval/viewHtm
+          - PreserveHostHeader
+
+      # 商城API
+      - id: mall_api_route
+        uri: lb://mall-api
+        predicates:
+          - Path=/mall/api/**
+        filters:
+          - PreserveHostHeader
+      # 商城定时任务
+      - id: mall_job_route
+        uri: lb://mall-job
+        predicates:
+          - Path=/mall/job/**
+        filters:
+          - PreserveHostHeader
+
+      # 履约的vue前端
+      - id: spt_view_route
+        uri: lb://spt-view
+        predicates:
+          - Path=/view/**
+        filters:
+          - AddResponseHeader=Cache-Control, max-age=3600
+      # 履约的vue前端静态资源
+      - id: spt-static_route
+        uri: lb://spt-view
+        predicates:
+          - Path=/spt-static/**
+        filters:
+          - AddResponseHeader=Cache-Control, max-age=3600
+      # 商城的vue前端
+      - id: mall_view_route
+        uri: lb://mall-view
+        predicates:
+          - Path=/mall/view/**
+        filters:
+          - AddResponseHeader=Cache-Control, max-age=3600
+      # 商城的vue前端静态资源
+      - id: mall-view-static_route
+        uri: lb://mall-view
+        predicates:
+          - Path=/mall-view-static/**
+        filters:
+          - AddResponseHeader=Cache-Control, max-age=3600
+      # 商城订单
+      - id: mall_order_route
+        uri: lb://mall-order
+        predicates:
+          - Path=/mall/order/**
+        filters:
+          - JcCas=/mall/order,/mall/order/shoppingCart/cartCount|/mall/order/api/**
+          - PreserveHostHeader
+
+      # 搜索服务
+      - id: spt_search_route
+        uri: lb://spt-search
+        predicates:
+          - Path=/search/**
+        filters:
+          - PreserveHostHeader
+feign:
+  httpclient:
+    enabled: false
+  okhttp:
+    enabled: true
+  hystrix:
+    enabled: false
+  jc-gateway:
+    url: ${FEIGN_GATEWAY_URL:http://localhost:7001}
+  jc-base:
+    url: ${FEIGN_BASE_URL:http://localhost:7201}
+
+jc.cloudt.oauth2.hostUrl: https://xmgl-test.glodon.com
+jc.sso.loginUrl: /login/
+jc-static.ribbon.KubernetesNamespace: ${K8S_NAMESPACE:jc-test}
+jc-base.ribbon.KubernetesNamespace: ${K8S_NAMESPACE:jc-test}
+jc-sourcing.ribbon.KubernetesNamespace: ${K8S_NAMESPACE:jc-test}
+jc-ec.ribbon.KubernetesNamespace: ${K8S_NAMESPACE:jc-test}
+jc-enterprise.ribbon.KubernetesNamespace: ${K8S_NAMESPACE:jc-test}
+jc-finance.ribbon.KubernetesNamespace: ${K8S_NAMESPACE:jc-test}
+jc-log.ribbon.KubernetesNamespace: ${K8S_NAMESPACE:jc-test}
+jc-order.ribbon.KubernetesNamespace: ${K8S_NAMESPACE:jc-test}
+jc-plan.ribbon.KubernetesNamespace: ${K8S_NAMESPACE:jc-test}
+jc-inter.ribbon.KubernetesNamespace: ${K8S_NAMESPACE:jc-test}
+jc-rpt.ribbon.KubernetesNamespace: ${K8S_NAMESPACE:jc-test}
+jc-job.ribbon.KubernetesNamespace: ${K8S_NAMESPACE:jc-test}
+jc-gateway.ribbon.KubernetesNamespace: ${K8S_NAMESPACE:jc-test}
+flow-engine.ribbon.KubernetesNamespace: ${K8S_NAMESPACE:jc-test}
+flow-app.ribbon.KubernetesNamespace: ${K8S_NAMESPACE:jc-test}
+jc-upgrade-agent.ribbon.KubernetesNamespace: ${K8S_NAMESPACE:jc-test}
+
+jc-static.ribbon.ServerListRefreshInterval: 10000
+jc-base.ribbon.ServerListRefreshInterval: 10000
+jc-sourcing.ribbon.ServerListRefreshInterval: 10000
+jc-ec.ribbon.ServerListRefreshInterval: 10000
+jc-enterprise.ribbon.ServerListRefreshInterval: 10000
+jc-finance.ribbon.ServerListRefreshInterval: 10000
+jc-log.ribbon.ServerListRefreshInterval: 10000
+jc-order.ribbon.ServerListRefreshInterval: 10000
+jc-plan.ribbon.ServerListRefreshInterval: 10000
+jc-inter.ribbon.ServerListRefreshInterval: 10000
+jc-rpt.ribbon.ServerListRefreshInterval: 10000
+jc-job.ribbon.ServerListRefreshInterval: 10000
+jc-gateway.ribbon.ServerListRefreshInterval: 10000
+flow-engine.ribbon.ServerListRefreshInterval: 10000
+flow-app.ribbon.ServerListRefreshInterval: 10000
+
+hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 5000
+hystrix.command.backendPoint.execution.isolation.thread.timeoutInMilliseconds: 5000

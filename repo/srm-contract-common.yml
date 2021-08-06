@@ -1,0 +1,115 @@
+server.port: ${SERVER_PORT}
+server.jetty.max-http-form-post-size: 20MB
+server.max-http-header-size: 2MB
+spring.main.allow-bean-definition-overriding: true
+jc.cache.redis.dbName: ${REDIS_DBNAME:jc-test}
+spring.redis.database: ${REDIS_DATABASE:11}
+spring.redis.host: ${REDIS_HOST:127.0.0.1}
+spring.redis.lettuce:
+  pool:
+    max-active: 8
+    max-idle: 8
+    max-wait: -1ms
+    min-idle: 0
+  shutdown-timeout: 100ms
+spring.redis:
+  port: ${REDIS_PORT:6379}
+
+application:
+  resource:
+    loadsort: srm-contract-service,srm-contract-core,jc-base-core,jc-core
+  ram-cache-expire: 3 # 默认本地存缓存时间（秒），本机设为3秒，正式网设为5分钟
+  dev: true # true|false 表示开启dev模式，用于开发使用配置通用选项,正式环境不可为true，可没有此配置项
+  log-to-console: true # true|false 是否打印SQL等系统调测信息，一般开发环境设true，正式环境设false
+  material-switch: ${MATERIAL_SWITCH:old} # 默认old，表示物料库用的是base里的物料表， new表示用的是spt_material新库
+  material-tables: ${MATERIAL_TABLES:mat_class,mat_material,mat_material_apply,mat_mctypes,mat_mysteel_data,mat_mysteel_jcmaterial,mat_mysteel_material,mat_mysteel_quotation,mat_pattern,mat_price} # 开关影响的物料库相关表
+jc.default:
+  datasource:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_CONTRACT}?useUnicode=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&useSSL=false&allowMultiQueries=true&rewriteBatchedStatements=true&serverTimezone=GMT%2B8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    initialSize: 5
+    minIdle: 1
+    maxActive: 20
+    maxWait: 60000
+
+jc.base:
+  datasource:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_BASE}?useUnicode=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8
+
+jc.jc:
+  datasource:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_SOURCING}?useUnicode=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8
+
+jc.enterprise:
+  datasource:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_ENTERPRISE}?useUnicode=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8
+
+jc.log:
+  datasource:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_LOG}?useUnicode=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8
+
+jc.plan:
+  datasource:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_PLAN}?useUnicode=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8
+
+jc.report:
+  datasource:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_RPT_ETL}?useUnicode=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8
+
+jcloud:
+  signature:
+    #    url: http://jcloud.gyuncai.cn/signature
+    url: '${SIGNATURE_URL:http://localhost:9020/signature}'
+    #    appid: ${SIGNATURE_ID:00000001}
+    # appid: ${SIGNATURE_ID:25188521}
+    appid: ${SIGNATURE_ID:hexy-b-local-test}
+    #    appkey: ${SIGNATURE_KEY:JHIOW2BH5FBGEKXONDRNSSY3SE9UPOAZ}
+    # appkey: ${SIGNATURE_KEY:JVHSFH69X410DP4HK6UPODSNWK4TCYKE}
+    appkey: ${SIGNATURE_KEY:hexy-b-local-test}
+spring:
+  cloud:
+    kubernetes:
+      enabled: false
+      ribbon:
+        mode: SERVICE
+        enabled: false
+
+ribbon:
+  KubernetesNamespace: ${K8S_NAMESPACE:default}
+  ServerListRefreshInterval: 5000
+
+feign:
+  httpclient:
+    enabled: true
+  hystrix:
+    enabled: true
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+  jc-gateway:
+    url: ${FEIGN_GATEWAY_URL:http://localhost:7001}
+  jc-base:
+    url: ${FEIGN_BASE_URL:http://localhost:7201}
+  spt-template:
+    url: ${FEIGN_TEMPLATE_URL:http://localhost:7305}
+
+jc:
+  api:
+    local:
+      gateway: http://127.0.0.1:7001

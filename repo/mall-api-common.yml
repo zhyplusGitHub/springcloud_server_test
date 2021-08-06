@@ -1,0 +1,43 @@
+server.port: ${SERVER_PORT}
+server.jetty.max-http-form-post-size: 20MB
+server.max-http-header-size: 2MB
+spring.main.allow-bean-definition-overriding: true
+jc.cache.redis.dbName: ${REDIS_DBNAME:jc-test}
+spring.redis.database: ${REDIS_DATABASE:11}
+spring.redis.host: ${REDIS_HOST:127.0.0.1}
+spring.redis.lettuce:
+  pool:
+    max-active: 8
+    max-idle: 8
+    max-wait: -1ms
+    min-idle: 0
+  shutdown-timeout: 100ms
+spring.redis:
+  port: ${REDIS_PORT:6379}
+
+application:
+  log-to-console: true # true|false 是否打印SQL等系统调测信息，一般开发环境设true，正式环境设false
+
+
+
+api:
+  suning:
+    appKey: ${SUNING_APP_KEY:f8b5944deb9029bb7adf53aa275f9085}
+    appSecret: ${SUNING_APP_SECRET:73ea22ce526fc6fe2b7ae0459b25cc03}
+    serverURL: ${SUNING_SERVER_URL:http://openxgpre.cnsuning.com/api/http/sopRequest}
+  deli:
+    appPassword: ${DELI_APP_PASSWORD:ede5070d7bb7ea57a3bc37fd56bcb6a9}
+    appSecret: ${DELI_APP_SECRET:cc7325c57c0bb06a19607f705e32f8df}
+    serverURL: ${DELI_SERVER_URL:http://testb2binner.nbdeli.com/rest/deli/}
+  zkh:
+    appKey: ${ZKH_APP_KEY:AAAA}
+    appSerect: ${ZKH_APP_SERECT:BBBB}
+    userName: ${ZKH_USER_NAME:CCC}
+    appPassword: ${ZKH_APP_PASSWORD:DDD}
+    appToken: ${ZKH_APP_TOKEN:EEE}
+    serverURL: ${ZKH_SERVER_URL:https://bizapi.jd.com}
+  xfs:
+    appKey: ${XFS_APP_KEY:AAAA}
+    appSerect: ${XFS_APP_SERECT:BBBB}
+    appProjectId: ${XFS_APP_PROJECT_ID:CCC}
+    serverURL: ${XFS_SERVER_URL:https://bizapi.jd.com}
